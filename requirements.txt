@@ -1,0 +1,4 @@
+pathlib
+pyyaml
+fastapi
+uvicorn

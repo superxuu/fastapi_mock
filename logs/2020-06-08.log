@@ -1,0 +1,28 @@
+2020-06-08 14:48:27,463 config.py [line:345] INFO:Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2020-06-08 14:48:27,463 statreload.py [line:46] INFO:Started reloader process [9392]
+2020-06-08 14:48:29,323 main.py [line:389] INFO:Started server process [13088]
+2020-06-08 14:48:29,326 on.py [line:22] INFO:Waiting for application startup.
+2020-06-08 14:48:29,327 main.py [line:17] INFO:startup
+2020-06-08 14:48:29,327 on.py [line:34] INFO:Application startup complete.
+2020-06-08 14:48:49,778 vba1.py [line:17] INFO:http://127.0.0.1:8000/vba1/vvv/23123
+2020-06-08 14:48:49,778 vba1.py [line:40] INFO:json_body:{'entInfo': '查询无记录', 'appid': None}
+2020-06-08 14:48:49,778 vba1.py [line:41] INFO:<class 'dict'>
+2020-06-08 14:48:49,787 mock_responce.py [line:46] INFO:condition_judge_list:[True]
+2020-06-08 14:48:49,787 mock_responce.py [line:49] INFO:命中规则文件vba1第2条，延时0秒，规则为：is-查询无记录，输入为：查询无记录
+2020-06-08 14:48:50,181 INFO:     127.0.0.1:37945 - "POST /vba1/vvv/23123 HTTP/1.1" 200 OK 
+2020-06-08 14:48:52,532 vba1.py [line:17] INFO:http://127.0.0.1:8000/vba1/vvv/23123
+2020-06-08 14:48:52,532 vba1.py [line:40] INFO:json_body:{'entInfo': '平安银行股份有限公司', 'appid': '12345'}
+2020-06-08 14:48:52,533 vba1.py [line:41] INFO:<class 'dict'>
+2020-06-08 14:48:52,539 mock_responce.py [line:46] INFO:condition_judge_list:[True, True]
+2020-06-08 14:48:52,539 mock_responce.py [line:49] INFO:命中规则文件vba1第1条，延时0秒，规则为：is-12345，输入为：12345
+2020-06-08 14:48:52,540 INFO:     127.0.0.1:37955 - "POST /vba1/vvv/23123 HTTP/1.1" 200 OK 
+2020-06-08 14:48:54,976 vba1.py [line:17] INFO:http://127.0.0.1:8000/vba1/vvv/23123
+2020-06-08 14:48:54,977 vba1.py [line:40] INFO:json_body:{'entInfo': None, 'appid': '345'}
+2020-06-08 14:48:54,977 vba1.py [line:41] INFO:<class 'dict'>
+2020-06-08 14:48:54,983 mock_responce.py [line:46] INFO:condition_judge_list:[True]
+2020-06-08 14:48:54,983 mock_responce.py [line:49] INFO:命中规则文件vba1第3条，延时0秒，规则为：is-None，输入为：None
+2020-06-08 14:48:54,984 INFO:     127.0.0.1:37959 - "POST /vba1/vvv/23123 HTTP/1.1" 200 OK 
+2020-06-08 17:19:28,148 INFO:     192.168.62.132:52945 - "GET / HTTP/1.1" 404 Not Found 
+2020-06-08 17:19:28,604 INFO:     192.168.62.132:52945 - "GET /favicon.ico HTTP/1.1" 404 Not Found 
+2020-06-08 17:19:32,048 INFO:     192.168.62.132:52945 - "GET / HTTP/1.1" 404 Not Found 
+2020-06-08 17:19:56,287 INFO:     192.168.62.132:52993 - "GET / HTTP/1.1" 404 Not Found 

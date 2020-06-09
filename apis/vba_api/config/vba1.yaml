@@ -1,0 +1,36 @@
+#纯数字要加引号，不然会被yaml当做int
+#入参为空，value:None
+vba1:
+  - res_file: 平安银行股份有限公司.json
+    enable: Y
+    index: 1
+    delay: 0
+    condition:
+      - {field: entInfo,rule: is,value: 平安银行股份有限公司}
+      - {field: appid,rule: is,value: '12345'}
+
+  - res_file: 查询无记录.json
+    enable: Y
+    index: 2
+    delay: 0
+    condition:
+      - {field: entInfo,rule: is,value: 查询无记录}
+
+  - res_file: 入参为空.json
+    enable: Y
+    index: 3
+    delay: 0
+    condition:
+      - {field: entInfo,rule: is,value: None}
+
+  - res_file: 文本响应.txt
+    enable: Y
+    status: 1
+    index: 7
+    delay: 0
+    condition:
+      - {field: entInfo,rule: regex,value: '.+'}
+
+
+
+
