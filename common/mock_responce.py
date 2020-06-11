@@ -27,7 +27,7 @@ class MockResponce():
             return res_file_path
         else:
             global hash_dict
-            print('hash_dict_len:', len(hash_dict))
+            logger.info(f'hash_dict_len: {len(hash_dict)}')
             if self.hash_key in hash_dict:
                 logger.info('hash_dict存在所要的响应，直接从hash_dict获取')
                 return hash_dict[self.hash_key]
@@ -118,7 +118,8 @@ class MockResponce():
 
         return _get_keyvalue_all(input_json)
 
-    def _exec_rule(self, rule, src, target):
+    @staticmethod
+    def _exec_rule(rule, src, target):
         if rule == 'is':
             if src == None or src == '':
                 return target in ['None', 'none']
