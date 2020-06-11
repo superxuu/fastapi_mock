@@ -5,10 +5,7 @@ import re
 from fastapi import HTTPException
 from fastapi.logger import logger
 
-# from .log_config import getloger
-
-
-# logger = getloger(__name__)
+hash_dict = {}
 
 
 class MockResponce():
@@ -16,29 +13,53 @@ class MockResponce():
         self.api_group = api_group
         self.api_name = api_name
         self.request_args = request_args
-        self.config_yaml = Path('apis/' + self.api_group + '/config/' + self.api_name + '.yaml')
-        # print(config_yaml)
-        if self.config_yaml.exists():
-            self.config = yaml.load(open(self.config_yaml, encoding='UTF-8'))
-            # print(self.config)
-            # print(self.api_name)
-        else:
-            logger.error(f'Mock 规则文件{self.config_yaml}不存在！！！')
-            # print(f'Mock 规则文件{self.config_yaml}不存在！！！')
-            raise HTTPException(status_code=404, detail=f"Mock yaml规则文件{self.config_yaml}不存在")
+        self.hash_key = hash(f'{self.api_group}@{self.api_name}@{self.request_args}')
 
-    def responce_filter(self):
-        res_list = self.config.get(self.api_name)
+    def responce_filter(self, read: bool = None):
+        """
+        :param read: 判断是否读取结果文件，True读取，返回结果文件的内容，适用于：Response(MockResponce('vba_api', 'vba1', json_body).responce_filter(read=True), media_type='application/json')
+                                       Fase不读取，直接返回文件路径，只用于：FileResponse(MockResponce('vba_api', 'vba1', json_body).responce_filter(read=False))
+        :return:
+        """
+        if not read:
+            config = self._get_config()
+            res_file_path = self._get_response_file(config)
+            return res_file_path
+        else:
+            global hash_dict
+            print('hash_dict_len:', len(hash_dict))
+            if self.hash_key in hash_dict:
+                logger.info('hash_dict存在所要的响应，直接从hash_dict获取')
+                return hash_dict[self.hash_key]
+            else:
+                config = self._get_config()
+                res_file_path = self._get_response_file(config)
+                response = open(res_file_path, 'r', encoding='UTF-8').read()
+                hash_dict[self.hash_key] = response
+                return response
+
+    def _get_config(self):
+        config_yaml = Path('apis/' + self.api_group + '/config/' + self.api_name + '.yaml')
+        # print(config_yaml)
+        if config_yaml.exists():
+            config = yaml.load(open(config_yaml, encoding='UTF-8'))
+            return config
+        else:
+            logger.error(f'Mock 规则文件{config_yaml}不存在！！！')
+            raise HTTPException(status_code=404, detail=f"Mock yaml规则文件{config_yaml}不存在")
+
+    def _get_response_file(self, config):
+        res_list = config.get(self.api_name)
         for res in res_list:
             if res['enable'] in ['N', 'n']:
                 continue
             else:
-                condition_judge_list=[]
+                condition_judge_list = []
                 for con in res['condition']:
                     args_field = self._get_field_from_args(con['field'])
                     target_field = con['value']
                     relu = con['rule']
-                    if self.exec_rule(relu, args_field, target_field):
+                    if self._exec_rule(relu, args_field, target_field):
                         condition_judge_list.append(True)
                     else:
                         condition_judge_list.append(False)
@@ -68,36 +89,36 @@ class MockResponce():
         elif not isinstance(self.request_args, dict):
             return self.request_args.get(field)
         else:
-            if self.get_json_keyvalue(self.request_args, field):
-                return self.get_json_keyvalue(self.request_args, field)[0]
+            if self._get_json_keyvalue(self.request_args, field):
+                return self._get_json_keyvalue(self.request_args, field)[0]
             else:
                 return None  # 入参body关键字没传时
 
     @staticmethod
-    def get_json_keyvalue(input_json, field):
+    def _get_json_keyvalue(input_json, field):
         """从json中取出关键key的所有value组成的list"""
         result = []
 
-        def get_keyvalue_all(input_json):
+        def _get_keyvalue_all(input_json):
             if isinstance(input_json, dict):
                 for key in input_json.keys():
                     key_value = input_json.get(key)
                     if isinstance(key_value, dict):
-                        get_keyvalue_all(key_value)
+                        _get_keyvalue_all(key_value)
                     elif isinstance(key_value, list):
                         for json_array in key_value:
-                            get_keyvalue_all(json_array)
+                            _get_keyvalue_all(json_array)
                     else:
                         if key == field:
                             result.append(key_value)
                 return result
             elif isinstance(input_json, list):
                 for input_json_array in input_json:
-                    get_keyvalue_all(input_json_array)
+                    _get_keyvalue_all(input_json_array)
 
-        return get_keyvalue_all(input_json)
+        return _get_keyvalue_all(input_json)
 
-    def exec_rule(self, rule, src, target):
+    def _exec_rule(self, rule, src, target):
         if rule == 'is':
             if src == None or src == '':
                 return target in ['None', 'none']
