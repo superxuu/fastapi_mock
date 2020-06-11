@@ -9,7 +9,8 @@
 .idea/
 __pycache__/
 
-
+*/__pycache__
+*/.idea/
 
 # User-specific stuff
 .idea/**/workspace.xml
